@@ -18,6 +18,7 @@ function mousemove(evt)
 	if ($mouseisdown )
 	{
 		$scrollItem.scrollLeft += $xcoorFrom-$xcoorTo;
+		$speed = $xcoorFrom-$xcoorTo;
 	}
 	$xcoorFrom=  evt.screenX;
 	//alert("hi");
@@ -26,5 +27,15 @@ function mousemove(evt)
 function mouseup(evt)
 {
 	$mouseisdown = false;
-	$timeNow = $timeNow- $swipeTime;
+	//alert($speed);
+	speedProceed();
+}
+function speedProceed()
+{
+	if ((!($mouseisdown))&&(($speed > 1)||($speed < -1)))
+	{
+		$scrollItem.scrollLeft += $speed;
+		$speed *= 0.98;
+		setTimeout(function() {speedProceed();}, 10)
+	}
 }
