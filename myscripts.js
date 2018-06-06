@@ -1,6 +1,7 @@
 
 document.addEventListener('mousedown', mousedown, false);
 document.addEventListener('mouseup', mouseup, false);
+document.addEventListener('mousemove', mousemove, false);
 var $xcoorTo,$xcoorFrom,$swipeTime,$speed;
 var $scrollPos;
 var $scrollItem;
@@ -9,27 +10,21 @@ function mousedown(evt)
 {
 	$scrollItem = document.getElementById('scrollId');
 	$mouseisdown = true;
-	var $d = new Date();
-	$swipeTime = $d.getTime();
-	$xcoorFrom =  evt.screenX;
+}
+
+function mousemove(evt)
+{
+	$xcoorTo =  evt.screenX;
+	if ($mouseisdown )
+	{
+		$scrollItem.scrollLeft += $xcoorFrom-$xcoorTo;
+	}
+	$xcoorFrom=  evt.screenX;
 	//alert("hi");
 }
 
 function mouseup(evt)
 {
-	$xcoorTo =  evt.screenX;
-	var $d = new Date();
-	var $timeNow = $d.getTime();
-	$speed = 1;
-	//alert("hi");
+	$mouseisdown = false;
 	$timeNow = $timeNow- $swipeTime;
-	var $res = ($xcoorFrom-$xcoorTo)/$timeNow*1000;
-	//$scrollItem.scrollLeft += $xcoorFrom-$xcoorTo;
-	setTimeout(function() {scrolRealization();}, 10);
-	alert();
-}
-function scrolRealization()
-{
-	$scrollItem.scrollLeft += $speed;
-	setTimeout(function() {scrolRealization();}, 10);
 }
