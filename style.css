@@ -1,0 +1,29 @@
+.listOnScreenLimuterBlock
+{
+	margin:auto;
+	padding:5px;
+	background-color: #CC6600;
+	overflow-x: scroll;
+
+}
+.blockwithborder
+{
+	float: left;
+	width: 200px;
+	height: 500px;
+	background-color: #ffffff;
+	margin: 10px;	
+
+}
+
+.listBlock
+{
+	
+	overflow-x: hidden;
+	width: 20000px;
+	height: auto;
+	flex-direction: column;
+	background-color: #777777;
+	text-align:center;
+	
+}
