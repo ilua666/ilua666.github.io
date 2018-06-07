@@ -1,4 +1,3 @@
-
 document.addEventListener('mousedown', mousedown, false);
 document.addEventListener('mouseup', mouseup, false);
 document.addEventListener('mousemove', mousemove, false);
@@ -74,9 +73,6 @@ function speedProceed()
 			positionNiceficator();
 		}
 	}
-	var scrollpoint = scrollItem.scrollLeft;
-	var newWindowSize = document.getElementById('body').clientWidth;
-	if 
 }
 
 
