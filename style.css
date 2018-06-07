@@ -13,8 +13,25 @@
 	background-color: #ffffff;
 	float: left;
 	margin: 10px;
-	display: inline-block;
 
+}
+.blockwithborder img
+{
+	width: 100%;
+}
+.blockwithborder h1
+{
+	font-size: 15px;
+}
+
+.blockwithborder h2
+{
+	font-size: 12px;
+}
+
+.blockwithborder p
+{
+	font-size: 12px;
 }
 
 .listBlock
@@ -22,4 +39,8 @@
 	display: inline-flex;
 	background-color: #777777;
 	
+}
+.headblock
+{
+	display: inline-flex;
 }

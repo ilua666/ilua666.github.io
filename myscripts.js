@@ -1,13 +1,20 @@
+
 document.addEventListener('mousedown', mousedown, false);
 document.addEventListener('mouseup', mouseup, false);
 document.addEventListener('mousemove', mousemove, false);
+window.ondragstart = function() { return false; } 
 var xcoorTo,xcoorFrom,speed;
 var scrollItem;
+var searchStr = "";
 var mouseisdown = false;
 const maxSize = 320;
+const apiPrefix = "https://www.googleapis.com/youtube/v3/search?maxResults=20&part=snippet&key=AIzaSyB8iFzdNo8E2OuiJeIhHPSXpbh3psn8mvQ&q="
+const youtubePrefix = "https://www.youtube.com/watch?v="
 var elementwidth = 320;
 var blockArr = [];
-var accel = 1;
+const accel = 1;
+var searchResult;
+var inInEnd = false;
 
 
 function mousedown(evt)
@@ -73,6 +80,17 @@ function speedProceed()
 			positionNiceficator();
 		}
 	}
+	var scrollpoint = scrollItem.scrollLeft;
+	var WindowSize = document.getElementById('body').clientWidth;
+	if ((scrollpoint+WindowSize+30 > listBlock.clientWidth) && !(inInEnd))
+	{
+		inInEnd = true;
+		alert("мы в конце, прогрузочка");
+	}
+	if (scrollpoint+WindowSize < listBlock.clientWidth - maxSize*2)
+	{
+		inInEnd = false;
+	}
 }
 
 
@@ -87,8 +105,6 @@ function loading()
     	element.style.width = '300px';
     	listBlock.appendChild(element);
     	blockArr.push(element);
- 		var t = document.createTextNode(i);
- 		element.appendChild(t);
 	}
 	resize();
 }
@@ -150,4 +166,68 @@ function positionNiceficator() //он выравнивает по позиции
 		speed = tempSpeed;
 	}
 	setTimeout(function() {speedProceed();}, 10)
+}
+
+function searchFirst()
+{
+	searchStr = document.getElementById('keywords').value
+	if(searchStr.length == 0)
+	{
+		alert('Пусто');
+	}
+	else
+	{
+		searchStr = searchStr.replace(/\s/g,'+');
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", apiPrefix + searchStr, false); //user, password);
+		xhr.send();
+    	searchResult = JSON.parse(xhr.responseText);
+		alert( xhr.responseText );
+		loadingResults();
+	}
+}
+function loadingResults()
+{
+	scrollItem = document.getElementById('scrollId');
+	listBlock = document.getElementById('listBlock');
+	for (var i = 0; i < searchResult.items.length; i++)
+	{
+		var element = document.createElement('div');
+    	element.className = 'blockwithborder';
+    	//element.style.width = '300px';
+    	listBlock.appendChild(element);
+    	blockArr.push(element); 					//Итак блок создан
+
+    	var a = document.createElement('a');		//ссылка
+    	a.setAttribute("href", youtubePrefix + searchResult.items[i].id.videoId);
+    	a.setAttribute("target", "_blank");
+    	element.appendChild(a);
+
+
+    	var img = document.createElement('img');  	//Картинка с ссылкой
+    	img.setAttribute("src",searchResult.items[i].snippet.thumbnails.high.url);
+    	img.draggable = false;
+    	a.appendChild(img);
+
+
+    	//var t = document.createTextNode("N"+i);		//Временный номер результата, позже убрать
+ 		//element.appendChild(t);
+ 													//название,автор,описание
+
+ 		var h1 = document.createElement('h1');		//название само
+ 		var t = document.createTextNode(searchResult.items[i].snippet.title);
+ 		h1.appendChild(t);
+    	element.appendChild(h1);									
+
+    	var h2 = document.createElement('h2');		//название канала
+ 		var t = document.createTextNode(searchResult.items[i].snippet.channelTitle);
+ 		h2.appendChild(t);
+    	element.appendChild(h2);	
+
+    	var p = document.createElement('p');		//Описание
+ 		var t = document.createTextNode(searchResult.items[i].snippet.description);
+ 		p.appendChild(t);
+    	element.appendChild(p);	
+	}
+	resize();
 }
