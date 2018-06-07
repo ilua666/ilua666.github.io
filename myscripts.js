@@ -84,9 +84,10 @@ function speedProceed()
 	}
 	var scrollpoint = scrollItem.scrollLeft;
 	var WindowSize = document.getElementById('body').clientWidth;
-	if ((scrollpoint+WindowSize+30 > listBlock.clientWidth) && !(inInEnd))
+	if ((scrollpoint+WindowSize+5 > listBlock.clientWidth) && !(inInEnd))
 	{
 		inInEnd = true;
+		speed = 0;
 		searchNextPage();
 	}
 	if (scrollpoint+WindowSize < listBlock.clientWidth - maxSize*2)
@@ -207,6 +208,8 @@ function searchFirst()
 		loadingResults();
 	}
 }
+function do_nothing(evt)
+{}
 function loadingResults()
 {
 	scrollItem = document.getElementById('scrollId');
@@ -227,7 +230,6 @@ function loadingResults()
 
     	var img = document.createElement('img');  	//Картинка с ссылкой
     	img.setAttribute("src",searchResult.items[i].snippet.thumbnails.high.url);
-    	img.draggable = false;
     	a.appendChild(img);
 
     	//n++;
@@ -266,4 +268,5 @@ function loadingResults()
     	}
 	}
 	resize();
+	speed = 0;
 }
