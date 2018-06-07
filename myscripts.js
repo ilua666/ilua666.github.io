@@ -203,7 +203,7 @@ function searchFirst()
 		xhr.open("GET", apiSearchPrefix + searchStr, false); 
 		xhr.send();
     	searchResult = JSON.parse(xhr.responseText);
-		alert( xhr.responseText );
+		//alert( xhr.responseText );
 		loadingResults();
 	}
 }
