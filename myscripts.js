@@ -213,8 +213,8 @@ function loadingResults()
 	listBlock = document.getElementById('listBlock');
 	for (var i = 0; i < searchResult.items.length; i++)
 	{
-		if (!(searchResult.items[i].id == null)){
-		var element = document.createElement('div');
+		if (!(searchResult.items[i].id.videoId == null)){  //ютуб иногда возвращает видео без videoId
+		var element = document.createElement('div');		//такие видео ломают логику, поэтому убраны
     	element.className = 'blockwithborder';
     	listBlock.appendChild(element);
     	blockArr.push(element); 					//Итак блок создан
