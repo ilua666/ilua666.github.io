@@ -8,13 +8,15 @@ var scrollItem;
 var searchStr = "";
 var mouseisdown = false;
 const maxSize = 320;
-const apiPrefix = "https://www.googleapis.com/youtube/v3/search?maxResults=20&part=snippet&key=AIzaSyB8iFzdNo8E2OuiJeIhHPSXpbh3psn8mvQ&q="
+const apiSearchPrefix = "https://www.googleapis.com/youtube/v3/search?maxResults=20&part=snippet&key=AIzaSyB8iFzdNo8E2OuiJeIhHPSXpbh3psn8mvQ&q="
+const apiStatisticPrefix = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=AIzaSyB8iFzdNo8E2OuiJeIhHPSXpbh3psn8mvQ&id="
 const youtubePrefix = "https://www.youtube.com/watch?v="
 var elementwidth = 320;
 var blockArr = [];
 const accel = 1;
 var searchResult;
 var inInEnd = false;
+var n = 0;
 
 
 function mousedown(evt)
@@ -85,7 +87,7 @@ function speedProceed()
 	if ((scrollpoint+WindowSize+30 > listBlock.clientWidth) && !(inInEnd))
 	{
 		inInEnd = true;
-		alert("мы в конце, прогрузочка");
+		searchNextPage();
 	}
 	if (scrollpoint+WindowSize < listBlock.clientWidth - maxSize*2)
 	{
@@ -167,9 +169,28 @@ function positionNiceficator() //он выравнивает по позиции
 	}
 	setTimeout(function() {speedProceed();}, 10)
 }
+function listClear()
+{
+	listBlock = document.getElementById('listBlock');
+	blockArr.forEach(function(entry) 
+	{
+    	listBlock.removeChild(entry);
+	});
+	blockArr = [];
+}
+
+function searchNextPage()
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", apiSearchPrefix + searchStr+ "&pageToken="+searchResult.nextPageToken, false); 
+	xhr.send();
+	searchResult = JSON.parse(xhr.responseText)
+	loadingResults();
+}
 
 function searchFirst()
 {
+	listClear()
 	searchStr = document.getElementById('keywords').value
 	if(searchStr.length == 0)
 	{
@@ -179,7 +200,7 @@ function searchFirst()
 	{
 		searchStr = searchStr.replace(/\s/g,'+');
 		var xhr = new XMLHttpRequest();
-		xhr.open("GET", apiPrefix + searchStr, false); //user, password);
+		xhr.open("GET", apiSearchPrefix + searchStr, false); 
 		xhr.send();
     	searchResult = JSON.parse(xhr.responseText);
 		alert( xhr.responseText );
@@ -192,16 +213,16 @@ function loadingResults()
 	listBlock = document.getElementById('listBlock');
 	for (var i = 0; i < searchResult.items.length; i++)
 	{
+		if (!(searchResult.items[i].id == null)){
 		var element = document.createElement('div');
     	element.className = 'blockwithborder';
-    	//element.style.width = '300px';
     	listBlock.appendChild(element);
     	blockArr.push(element); 					//Итак блок создан
-
+													//в красоту											
     	var a = document.createElement('a');		//ссылка
     	a.setAttribute("href", youtubePrefix + searchResult.items[i].id.videoId);
     	a.setAttribute("target", "_blank");
-    	element.appendChild(a);
+    	element.appendChild(a);	
 
 
     	var img = document.createElement('img');  	//Картинка с ссылкой
@@ -209,8 +230,8 @@ function loadingResults()
     	img.draggable = false;
     	a.appendChild(img);
 
-
-    	//var t = document.createTextNode("N"+i);		//Временный номер результата, позже убрать
+    	//n++;
+    	//var t = document.createTextNode("N"+n);		//Временный номер результата, позже убрать
  		//element.appendChild(t);
  													//название,автор,описание
 
@@ -222,12 +243,27 @@ function loadingResults()
     	var h2 = document.createElement('h2');		//название канала
  		var t = document.createTextNode(searchResult.items[i].snippet.channelTitle);
  		h2.appendChild(t);
-    	element.appendChild(h2);	
+    	element.appendChild(h2);
 
-    	var p = document.createElement('p');		//Описание
- 		var t = document.createTextNode(searchResult.items[i].snippet.description);
+   		var xhr = new XMLHttpRequest();
+		xhr.open("GET", apiStatisticPrefix + searchResult.items[i].id.videoId, false); //Запрос длительности
+		xhr.send();
+		var statResult = JSON.parse(xhr.responseText);
+		var durationStr = statResult.items[0].contentDetails.duration;
+		durationStr = durationStr.replace(/PT/g,'');
+		durationStr = durationStr.replace(/H/g,':')
+		durationStr = durationStr.replace(/M/g,':');
+		durationStr = durationStr.replace(/S/g,'');	
+		var p = document.createElement('p');		//время
+ 		var t = document.createTextNode(durationStr);
  		p.appendChild(t);
     	element.appendChild(p);	
+
+    	var p = document.createElement('p');		//Описание
+ 		var t = document.createTextNode("Decsription: "+searchResult.items[i].snippet.description);
+ 		p.appendChild(t);
+    	element.appendChild(p);	
+    	}
 	}
 	resize();
 }
