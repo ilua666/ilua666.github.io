@@ -182,6 +182,8 @@ function listClear()
 
 function searchNextPage()
 {
+	var loadInd = document.getElementById('loadingBar');
+	loadInd.setAttribute("class", "loading");
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", apiSearchPrefix + searchStr+ "&pageToken="+searchResult.nextPageToken, false); 
 	xhr.send();
@@ -199,6 +201,8 @@ function searchFirst()
 	}
 	else
 	{
+		var loadInd = document.getElementById('loadingBar');
+		loadInd.setAttribute("class", "loading");
 		searchStr = searchStr.replace(/\s/g,'+');
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", apiSearchPrefix + searchStr, false); 
@@ -212,6 +216,7 @@ function do_nothing(evt)
 {}
 function loadingResults()
 {
+
 	scrollItem = document.getElementById('scrollId');
 	listBlock = document.getElementById('listBlock');
 	for (var i = 0; i < searchResult.items.length; i++)
@@ -268,5 +273,7 @@ function loadingResults()
     	}
 	}
 	resize();
+	var loadInd = document.getElementById('loadingBar');
+	loadInd.setAttribute("class", "hidden");
 	speed = 0;
 }

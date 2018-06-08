@@ -13,8 +13,24 @@
 	background-color: #ffffff;
 	float: left;
 	margin: 10px;
+    -webkit-user-select: none; /* Safari */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
 
 }
+.hidden
+{
+	display:hidden;
+}
+.loading
+{
+	background-color: #006994;
+	margin:20px;
+	height: 50px;
+	width: 50px;
+}
+
 .blockwithborder img
 {
 	width: 100%;
